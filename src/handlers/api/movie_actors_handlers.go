@@ -16,6 +16,18 @@ func NewMovieActorHandler(movieActorService *services.MovieActorService) *MovieA
 	return &MovieActorHandler{movieActorService}
 }
 
+// GetMovieActors
+//
+//	@Summary	Get all actors, who starred in the movie
+//	@Tags		movie_actors
+//	@Produce	json
+//	@Security	Bearer
+//	@Param		id	path	int	true	"movie id"	minimum(0)
+//	@Success	200	{array}	domain.Actor
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/movies/{id}/actors [get]
 func (mah *MovieActorHandler) GetMovieActors(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("mid")
 
@@ -39,6 +51,18 @@ func (mah *MovieActorHandler) GetMovieActors(w http.ResponseWriter, r *http.Requ
 	w.Write(response)
 }
 
+// GetActorMovies
+//
+//	@Summary	Get all movies, where an actor has starred
+//	@Tags		actor_movies
+//	@Produce	json
+//	@Security	Bearer
+//	@Param		id	path	int	true	"actor id"	minimum(0)
+//	@Success	200	{array}	domain.Movie
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors/{id}/movies [get]
 func (mah *MovieActorHandler) GetActorMovies(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("aid")
 
@@ -62,6 +86,18 @@ func (mah *MovieActorHandler) GetActorMovies(w http.ResponseWriter, r *http.Requ
 	w.Write(response)
 }
 
+// CreateMovieActor
+//
+//	@Summary	Add an actor to movie's stars list
+//	@Tags		movie_actors
+//	@Security	Bearer
+//	@Param		mid	path	int	true	"movie id"	minimum(0)
+//	@Param		aid	path	int	true	"actor id"	minimum(0)
+//	@Success	200
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/movies/{mid}/actors/{aid}/ [post]
 func (mah *MovieActorHandler) CreateMovieActor(w http.ResponseWriter, r *http.Request) {
 	rawMid, rawAid := r.PathValue("mid"), r.PathValue("aid")
 
@@ -82,6 +118,18 @@ func (mah *MovieActorHandler) CreateMovieActor(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// DeleteMovieActor
+//
+//	@Summary	Remove an actor from movie's stars list
+//	@Tags		movie_actors
+//	@Security	Bearer
+//	@Param		mid	path	int	true	"movie id"	minimum(0)
+//	@Param		aid	path	int	true	"actor id"	minimum(0)
+//	@Success	200
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/movies/{mid}/actors/{aid}/ [delete]
 func (mah *MovieActorHandler) DeleteMovieActor(w http.ResponseWriter, r *http.Request) {
 	rawMid, rawAid := r.PathValue("mid"), r.PathValue("aid")
 

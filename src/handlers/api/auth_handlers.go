@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"mxshs/movieLibrary/src/domain"
 	"mxshs/movieLibrary/src/services"
 	"net/http"
@@ -31,6 +32,7 @@ func (am *AuthHandler) Authenticate(next http.HandlerFunc, role domain.Role) htt
 
 		err := am.as.ValidateToken(token[1], &domain.TokenClaim{Role: role})
 		if err != nil {
+			fmt.Println("i failed")
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}

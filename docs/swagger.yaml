@@ -1,0 +1,687 @@
+basePath: /api/v1
+definitions:
+  adaptermodels.User:
+    properties:
+      password:
+        example: test_password
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: 0
+        format: domain.Role
+      username:
+        example: test_user
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  adaptermodels.UserUpdate:
+    properties:
+      new_password:
+        example: test_password_new
+        type: string
+      new_username:
+        example: test_user_new
+        type: string
+      password:
+        example: test_password
+        type: string
+      username:
+        example: test_user
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  domain.Actor:
+    properties:
+      birthdate:
+        example: 11.11.1974
+        format: date
+        type: string
+      gender:
+        example: male
+        type: string
+      id:
+        example: 0
+        format: int64
+        type: integer
+      name:
+        example: Leonardo DiCaprio
+        type: string
+    required:
+    - gender
+    - name
+    type: object
+  domain.Movie:
+    properties:
+      description:
+        example: Movie about some stuff
+        maxLength: 1500
+        type: string
+      id:
+        example: 0
+        format: int64
+        type: integer
+      rating:
+        example: 8
+        format: uint8
+        maximum: 10
+        minimum: 0
+        type: integer
+      release_date:
+        example: 25.12.2013
+        format: date
+        type: string
+      title:
+        example: The Wolf of Wall-Street
+        type: string
+    required:
+    - description
+    - rating
+    - release_date
+    type: object
+  domain.Role:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - USR
+    - ADM
+  domain.User:
+    properties:
+      id:
+        example: 0
+        format: int64
+        type: integer
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: 0
+        format: domain.Role
+      username:
+        example: test_user
+        type: string
+    type: object
+  domain.UserTokenPair:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTEzMTA0NDMsIlJvbGUiOjF9.W7yqNX39GkHzYZnzw6U7gaMib4lmdpipIRXzvSNUfII
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTEzMjQ4NDMsIlJvbGUiOjF9.2wS0BonGkE-Xa1CaTXSr_OYQYLgtginJYLkk-2n8b_Y
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: '...'
+  title: Movies & Actors API
+  version: "1.0"
+paths:
+  /actors:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Actor'
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get all actors
+      tags:
+      - actors
+  /actors/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New actor
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Actor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Actor'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Create a new actor entry
+      tags:
+      - actors
+  /actors/{id}:
+    get:
+      parameters:
+      - description: actor id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Actor'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get an actor entry by actor id
+      tags:
+      - actors
+  /actors/{id}/:
+    delete:
+      parameters:
+      - description: actor id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Remove an actor entry by actor id
+      tags:
+      - actors
+    patch:
+      parameters:
+      - description: int valid
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      - description: Actor fields to update
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Actor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Actor'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Update an actor entry by actor id
+      tags:
+      - actors
+  /actors/{id}/movies:
+    get:
+      parameters:
+      - description: actor id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Movie'
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get all movies, where an actor has starred
+      tags:
+      - actor_movies
+  /movies:
+    get:
+      description: Retrieve all movies or pass query parameters "title" and "actor"
+        to search by movie title and actor name (partial match)
+      parameters:
+      - description: any part of the movie title
+        in: query
+        name: title
+        type: string
+      - description: any part of the actor's name
+        in: query
+        name: actor
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Movie'
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get multiple movies
+      tags:
+      - movies
+  /movies/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New movie
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Movie'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Create a new movie entry
+      tags:
+      - movies
+  /movies/{id}:
+    get:
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Movie'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get a movie entry by movie id
+      tags:
+      - movies
+  /movies/{id}/:
+    delete:
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Delete a movie entry by movie id
+      tags:
+      - movies
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      - description: Movie fields to update
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Movie'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Update a movie entry by movie id
+      tags:
+      - movies
+  /movies/{id}/actors:
+    get:
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Actor'
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get all actors, who starred in the movie
+      tags:
+      - movie_actors
+  /movies/{mid}/actors/{aid}/:
+    delete:
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: mid
+        required: true
+        type: integer
+      - description: actor id
+        in: path
+        minimum: 0
+        name: aid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Remove an actor from movie's stars list
+      tags:
+      - movie_actors
+    post:
+      parameters:
+      - description: movie id
+        in: path
+        minimum: 0
+        name: mid
+        required: true
+        type: integer
+      - description: actor id
+        in: path
+        minimum: 0
+        name: aid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Add an actor to movie's stars list
+      tags:
+      - movie_actors
+  /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get all users
+      tags:
+      - users
+  /users/:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user and returns access+refresh tokens for future
+        auth
+      parameters:
+      - description: New user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/adaptermodels.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserTokenPair'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      summary: Create a new user
+      tags:
+      - users
+  /users/{id}:
+    get:
+      parameters:
+      - description: user id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Get a user by id
+      tags:
+      - users
+  /users/{id}/:
+    delete:
+      parameters:
+      - description: user id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      security:
+      - Bearer: []
+      summary: Delete a user
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Update user's username/password, other changes are currently not
+        supported
+      parameters:
+      - description: user id
+        in: path
+        minimum: 0
+        name: id
+        required: true
+        type: integer
+      - description: Login credentials and fields to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/adaptermodels.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserTokenPair'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      summary: Update a user
+      tags:
+      - users
+  /users/login/:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with username and password and return new token pair
+      parameters:
+      - description: Login credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserTokenPair'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      summary: Login a user
+      tags:
+      - users
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -55,6 +55,8 @@ func NewPgDB() *PgDB {
 	if err != nil {
 		panic(err)
 	}
+	db.SetMaxOpenConns(1000)
+	db.SetMaxIdleConns(1000)
 
 	return &PgDB{db}
 }

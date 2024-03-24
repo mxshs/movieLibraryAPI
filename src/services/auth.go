@@ -2,9 +2,10 @@ package services
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt"
 	"mxshs/movieLibrary/src/domain"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 type AuthService struct {
@@ -12,33 +13,33 @@ type AuthService struct {
 }
 
 func NewAuthService() *AuthService {
-	return &AuthService{}
+	return &AuthService{[]byte("Test")}
 }
 
 func (as *AuthService) CreateTokenPair(role domain.Role) (*domain.UserTokenPair, error) {
 	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, &domain.TokenClaim{
-		jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(4 * time.Hour).Unix(),
 		},
-		role,
+		Role: role,
 	}).SignedString(as.signingKey)
 	if err != nil {
 		return nil, err
 	}
 
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, &domain.TokenClaim{
-		jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(8 * time.Hour).Unix(),
 		},
-		role,
+		Role: role,
 	}).SignedString(as.signingKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &domain.UserTokenPair{
-		accessToken,
-		refreshToken,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -66,8 +67,8 @@ func (as *AuthService) ValidateToken(token string, claim *domain.TokenClaim) err
 		if claims.Role >= claim.Role {
 			return nil
 		}
-		return fmt.Errorf("Invalid token")
+		return fmt.Errorf("invalid token")
 	}
 
-	return fmt.Errorf("Invalid token")
+	return fmt.Errorf("invalid token")
 }

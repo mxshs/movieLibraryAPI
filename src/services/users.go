@@ -17,16 +17,20 @@ func (us *UserService) CreateUser(username, password string) (*domain.User, erro
 	return us.userRepo.CreateUser(username, password, domain.USR)
 }
 
-func (us *UserService) GetUser(username string) (*domain.User, error) {
-	return us.userRepo.GetUserByUsername(username)
+func (us *UserService) GetUser(id int) (*domain.User, error) {
+	return us.userRepo.GetUser(id)
 }
 
-func (us *UserService) UpdateUser(username, newPassword string) (*domain.User, error) {
-	return us.userRepo.UpdateUser(username, newPassword)
+func (us *UserService) GetUsers() ([]*domain.User, error) {
+	return us.userRepo.GetUsers()
 }
 
-func (us *UserService) DeleteUser(username string) error {
-	return us.userRepo.DeleteUser(username)
+func (us *UserService) UpdateUser(id int, newUsername, newPassword string) (*domain.User, error) {
+	return us.userRepo.UpdateUser(id, newUsername, newPassword)
+}
+
+func (us *UserService) DeleteUser(id int) error {
+	return us.userRepo.DeleteUser(id)
 }
 
 func (us *UserService) LoginUser(username, password string) (*domain.User, error) {

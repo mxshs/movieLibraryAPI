@@ -17,6 +17,19 @@ func NewActorHandler(actorService *services.ActorService) *ActorHandler {
 	return &ActorHandler{actorService}
 }
 
+// CreateActor godoc
+//
+//	@Summary	Create a new actor entry
+//	@Tags		actors
+//	@Accept		json
+//	@Produce	json
+//	@Security	Bearer
+//	@Param		actor	body		domain.Actor	true	"New actor"
+//	@Success	200		{object}	domain.Actor
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors/ [post]
 func (ah *ActorHandler) CreateActor(w http.ResponseWriter, r *http.Request) {
 	var a adaptermodels.BaseActor
 
@@ -48,6 +61,18 @@ func (ah *ActorHandler) CreateActor(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+// GetActor
+//
+//	@Summary	Get an actor entry by actor id
+//	@Tags		actors
+//	@Produce	json
+//	@Security	Bearer
+//	@Param		id	path		int	true	"actor id"	minimum(0)
+//	@Success	200	{object}	domain.Actor
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors/{id} [get]
 func (ah *ActorHandler) GetActor(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
@@ -71,6 +96,17 @@ func (ah *ActorHandler) GetActor(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+// GetActors
+//
+//	@Summary	Get all actors
+//	@Tags		actors
+//	@Produce	json
+//	@Security	Bearer
+//	@Success	200	{array}	domain.Actor
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors [get]
 func (ah *ActorHandler) GetActors(w http.ResponseWriter, r *http.Request) {
 	result, err := ah.actorService.GetActors()
 	if err != nil {
@@ -87,6 +123,20 @@ func (ah *ActorHandler) GetActors(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+// UpdateActor
+//
+//	@Summary	Update an actor entry by actor id
+//	@Tags		actors
+//	@Accepts	json
+//	@Produce	json
+//	@Security	Bearer
+//	@Param		id		path		int				true	"int valid"	minimum(0)
+//	@Param		actor	body		domain.Actor	true	"Actor fields to update"
+//	@Success	200		{object}	domain.Actor
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors/{id}/ [patch]
 func (ah *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
@@ -126,6 +176,17 @@ func (ah *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+// DeleteActor
+//
+//	@Summary	Remove an actor entry by actor id
+//	@Tags		actors
+//	@Security	Bearer
+//	@Param		id	path	int	true	"actor id"	minimum(0)
+//	@Success	200
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Router		/actors/{id}/ [delete]
 func (ah *ActorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 

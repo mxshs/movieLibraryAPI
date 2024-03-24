@@ -35,7 +35,7 @@ func (pdb *PgDB) CreateMovie(title, description string, releaseDate time.Time, r
 	}, nil
 }
 
-func (pdb *PgDB) GetMovie(mid int) (*domain.Movie, error) {
+func (pdb *PgDB) GetMovie(mid int) (*domain.MovieDetail, error) {
 	q, err := pdb.db.Query(
 		`SELECT * FROM movies
         WHERE mid = $1`,
@@ -52,7 +52,7 @@ func (pdb *PgDB) GetMovie(mid int) (*domain.Movie, error) {
 		)
 	}
 
-	var movie domain.Movie
+	var movie domain.MovieDetail
 
 	err = q.Scan(&movie.Id, &movie.Title, &movie.Description, &movie.ReleaseDate, &movie.Rating)
 	if err != nil {
@@ -62,7 +62,7 @@ func (pdb *PgDB) GetMovie(mid int) (*domain.Movie, error) {
 	return &movie, nil
 }
 
-func (pdb *PgDB) GetMovies() ([]*domain.Movie, error) {
+func (pdb *PgDB) GetMovies() ([]*domain.MovieDetail, error) {
 	q, err := pdb.db.Query(
 		`SELECT * FROM movies;`,
 	)
@@ -70,36 +70,10 @@ func (pdb *PgDB) GetMovies() ([]*domain.Movie, error) {
 		return nil, err
 	}
 
-	movies := []*domain.Movie{}
+	movies := []*domain.MovieDetail{}
 
 	for q.Next() {
-		var movie domain.Movie
-
-		err = q.Scan(&movie)
-		if err != nil {
-			return nil, err
-		}
-
-		movies = append(movies, &movie)
-	}
-
-	return movies, nil
-}
-
-func (pdb *PgDB) SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domain.Movie, error) {
-	q, err := pdb.db.Query(
-		`SELECT * FROM movies
-        WHERE title SIMILAR TO $1;`,
-		fmt.Sprintf("%%%s%%", title),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	movies := []*domain.Movie{}
-
-	for q.Next() {
-		var movie domain.Movie
+		var movie domain.MovieDetail
 
 		err = q.Scan(&movie.Id, &movie.Title, &movie.Description, &movie.ReleaseDate, &movie.Rating)
 		if err != nil {
@@ -112,7 +86,33 @@ func (pdb *PgDB) SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domai
 	return movies, nil
 }
 
-func (pdb *PgDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.Movie, error) {
+func (pdb *PgDB) SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domain.MovieDetail, error) {
+	q, err := pdb.db.Query(
+		`SELECT * FROM movies
+        WHERE title SIMILAR TO $1;`,
+		fmt.Sprintf("%%%s%%", title),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	movies := []*domain.MovieDetail{}
+
+	for q.Next() {
+		var movie domain.MovieDetail
+
+		err = q.Scan(&movie.Id, &movie.Title, &movie.Description, &movie.ReleaseDate, &movie.Rating)
+		if err != nil {
+			return nil, err
+		}
+
+		movies = append(movies, &movie)
+	}
+
+	return movies, nil
+}
+
+func (pdb *PgDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.MovieDetail, error) {
 	q, err := pdb.db.Query(
 		`
         SELECT * FROM movies
@@ -132,10 +132,10 @@ func (pdb *PgDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*domai
 		return nil, err
 	}
 
-	movies := []*domain.Movie{}
+	movies := []*domain.MovieDetail{}
 
 	for q.Next() {
-		var movie domain.Movie
+		var movie domain.MovieDetail
 
 		err = q.Scan(&movie.Id, &movie.Title, &movie.Description, &movie.ReleaseDate, &movie.Rating)
 		if err != nil {

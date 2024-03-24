@@ -41,7 +41,7 @@ func (pdb *PgDB) CreateActor(name, gender string, bd time.Time) (*domain.Actor, 
 	}, nil
 }
 
-func (pdb *PgDB) GetActor(aid int) (*domain.Actor, error) {
+func (pdb *PgDB) GetActor(aid int) (*domain.ActorDetail, error) {
 	q, err := pdb.db.Query(
 		`SELECT * FROM actors
         WHERE aid = $1;`,
@@ -58,7 +58,7 @@ func (pdb *PgDB) GetActor(aid int) (*domain.Actor, error) {
 		)
 	}
 
-	var actor domain.Actor
+	var actor domain.ActorDetail
 
 	err = q.Scan(&actor.Id, &actor.Name, &actor.Gender, &actor.Birthdate)
 	if err != nil {
@@ -68,7 +68,7 @@ func (pdb *PgDB) GetActor(aid int) (*domain.Actor, error) {
 	return &actor, nil
 }
 
-func (pdb *PgDB) GetActors() ([]*domain.Actor, error) {
+func (pdb *PgDB) GetActors() ([]*domain.ActorDetail, error) {
 	q, err := pdb.db.Query(
 		`SELECT * FROM actors;`,
 	)
@@ -76,10 +76,10 @@ func (pdb *PgDB) GetActors() ([]*domain.Actor, error) {
 		return nil, err
 	}
 
-	actors := []*domain.Actor{}
+	actors := []*domain.ActorDetail{}
 
 	for q.Next() {
-		var actor domain.Actor
+		var actor domain.ActorDetail
 
 		err = q.Scan(&actor.Id, &actor.Name, &actor.Gender, &actor.Birthdate)
 		if err != nil {

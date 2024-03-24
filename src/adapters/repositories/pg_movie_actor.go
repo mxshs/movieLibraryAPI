@@ -2,6 +2,7 @@ package repository_adapter
 
 import (
 	"mxshs/movieLibrary/src/domain"
+
 	_ "github.com/lib/pq"
 )
 

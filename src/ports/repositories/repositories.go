@@ -7,18 +7,18 @@ import (
 
 type ActorRepository interface {
 	CreateActor(name string, gender string, bd time.Time) (*domain.Actor, error)
-	GetActor(id int) (*domain.Actor, error)
-	GetActors() ([]*domain.Actor, error)
+	GetActor(id int) (*domain.ActorDetail, error)
+	GetActors() ([]*domain.ActorDetail, error)
 	UpdateActor(id int, name, gender string, bd time.Time) (*domain.Actor, error)
 	DeleteActor(id int) error
 }
 
 type MovieRepository interface {
 	CreateMovie(title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error)
-	GetMovie(id int) (*domain.Movie, error)
-	GetMovies() ([]*domain.Movie, error)
-	SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domain.Movie, error)
-	SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.Movie, error)
+	GetMovie(id int) (*domain.MovieDetail, error)
+	GetMovies() ([]*domain.MovieDetail, error)
+	SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domain.MovieDetail, error)
+	SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.MovieDetail, error)
 	UpdateMovie(id int, title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error)
 	DeleteMovie(id int) error
 }
@@ -32,8 +32,9 @@ type MovieActorRepository interface {
 
 type UserRepository interface {
 	CreateUser(username, password string, role domain.Role) (*domain.User, error)
-	GetUserByUsername(username string) (*domain.User, error)
+	GetUser(id int) (*domain.User, error)
+	GetUsers() ([]*domain.User, error)
 	LoginUser(username, password string) (*domain.User, error)
-	UpdateUser(username, newPassword string) (*domain.User, error)
-	DeleteUser(username string) error
+	UpdateUser(id int, newUsername, newPassword string) (*domain.User, error)
+	DeleteUser(id int) error
 }
