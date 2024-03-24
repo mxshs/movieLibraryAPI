@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod tidy && go build
+RUN go mod tidy && go build ./cmd/srv
 
-CMD ["./movieLibrary"]
+CMD ["./srv"]
