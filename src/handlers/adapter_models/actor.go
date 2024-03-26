@@ -1,6 +1,6 @@
 package adaptermodels
 
-import "mxshs/movieLibrary/src/handlers/utils"
+import "mxshs/movieLibrary/src/utils"
 
 type BaseActor struct {
 	Id        int        `json:"id" example:"0" format:"int64"`

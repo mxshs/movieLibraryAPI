@@ -45,7 +45,7 @@ func (ah *ActorHandler) CreateActor(w http.ResponseWriter, r *http.Request) {
 	result, err := ah.actorService.Create(
 		a.Name,
 		a.Gender,
-		a.Birthdate.Time,
+		a.Birthdate,
 	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -160,7 +160,7 @@ func (ah *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 		aid,
 		a.Name,
 		a.Gender,
-		a.Birthdate.Time,
+		a.Birthdate,
 	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

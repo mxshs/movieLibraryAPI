@@ -45,7 +45,7 @@ func (mh *MovieHandler) CreateMovie(w http.ResponseWriter, r *http.Request) {
 	result, err := mh.movieService.CreateMovie(
 		m.Title,
 		m.Description,
-		m.ReleaseDate.Time,
+		m.ReleaseDate,
 		m.Rating,
 	)
 
@@ -171,7 +171,7 @@ func (mh *MovieHandler) UpdateMovie(w http.ResponseWriter, r *http.Request) {
 		mid,
 		a.Title,
 		a.Description,
-		a.ReleaseDate.Time,
+		a.ReleaseDate,
 		a.Rating,
 	)
 

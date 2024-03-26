@@ -3,8 +3,8 @@ package services
 import (
 	"mxshs/movieLibrary/src/domain"
 	"mxshs/movieLibrary/src/ports/repositories"
+	"mxshs/movieLibrary/src/utils"
 	"sync"
-	"time"
 )
 
 type MovieService struct {
@@ -19,7 +19,7 @@ func NewMovieService(movieRepo repositories.MovieRepository, movieActorRepo repo
 	}
 }
 
-func (ms *MovieService) CreateMovie(title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error) {
+func (ms *MovieService) CreateMovie(title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error) {
 	return ms.movieRepo.CreateMovie(title, description, releaseDate, rating)
 }
 
@@ -29,12 +29,9 @@ func (ms *MovieService) GetMovie(id int) (*domain.MovieDetail, error) {
 		return nil, err
 	}
 
-	actors, err := ms.movieActorRepo.GetMovieActors(id)
-	if err != nil {
-		return nil, err
+	if actors, err := ms.movieActorRepo.GetMovieActors(id); err == nil {
+		movie.Stars = actors
 	}
-
-	movie.Stars = actors
 
 	return movie, nil
 }
@@ -75,7 +72,7 @@ func (ms *MovieService) GetMovies(sortKey, sortOrder, title, actor string) ([]*d
 
 			movies[i].Stars = actors
 			wg.Done()
-		}(i)
+		}(i + 1)
 	}
 
 	wg.Wait()
@@ -83,7 +80,7 @@ func (ms *MovieService) GetMovies(sortKey, sortOrder, title, actor string) ([]*d
 	return movies, nil
 }
 
-func (ms *MovieService) UpdateMovie(id int, title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error) {
+func (ms *MovieService) UpdateMovie(id int, title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error) {
 	return ms.movieRepo.UpdateMovie(id, title, description, releaseDate, rating)
 }
 

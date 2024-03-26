@@ -8,8 +8,10 @@ import (
 
 func (pdb *PgDB) GetActorMovies(aid int) ([]*domain.Movie, error) {
 	q, err := pdb.db.Query(
-		`SELECT mid FROM movie_actors
-        WHERE aid = $1;`,
+		`SELECT movies.mid, movies.title, movies.description, movies.release_date, movies.rating
+        FROM movie_actors
+        LEFT JOIN movies ON movies.mid = movie_actors.mid
+        WHERE movie_actors.aid = $1;`,
 		aid,
 	)
 	if err != nil {
@@ -20,7 +22,7 @@ func (pdb *PgDB) GetActorMovies(aid int) ([]*domain.Movie, error) {
 	for q.Next() {
 		var movie domain.Movie
 
-		err = q.Scan(&movie)
+		err = q.Scan(&movie.Id, &movie.Title, &movie.Description, &movie.ReleaseDate, &movie.Rating)
 		if err != nil {
 			return nil, err
 		}

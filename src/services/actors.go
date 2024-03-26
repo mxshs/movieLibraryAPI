@@ -3,8 +3,8 @@ package services
 import (
 	"mxshs/movieLibrary/src/domain"
 	"mxshs/movieLibrary/src/ports/repositories"
+	"mxshs/movieLibrary/src/utils"
 	"sync"
-	"time"
 )
 
 type ActorService struct {
@@ -16,7 +16,7 @@ func NewActorService(actorRepo repositories.ActorRepository, movieActorRepo repo
 	return &ActorService{actorRepo, movieActorRepo}
 }
 
-func (as *ActorService) Create(name string, gender string, bd time.Time) (*domain.Actor, error) {
+func (as *ActorService) Create(name string, gender string, bd utils.Date) (*domain.Actor, error) {
 	return as.actorRepo.CreateActor(name, gender, bd)
 }
 
@@ -26,7 +26,7 @@ func (as *ActorService) GetActor(id int) (*domain.ActorDetail, error) {
 		return nil, err
 	}
 
-	if movies, err := as.movieActorRepo.GetActorMovies(id); err != nil {
+	if movies, err := as.movieActorRepo.GetActorMovies(id); err == nil {
 		actor.Movies = movies
 	}
 
@@ -51,7 +51,7 @@ func (as *ActorService) GetActors() ([]*domain.ActorDetail, error) {
 
 			actors[i].Movies = movies
 			wg.Done()
-		}(i)
+		}(i + 1)
 	}
 
 	wg.Wait()
@@ -59,7 +59,7 @@ func (as *ActorService) GetActors() ([]*domain.ActorDetail, error) {
 	return actors, nil
 }
 
-func (as *ActorService) Update(id int, name string, gender string, bd time.Time) (*domain.Actor, error) {
+func (as *ActorService) Update(id int, name string, gender string, bd utils.Date) (*domain.Actor, error) {
 	return as.actorRepo.UpdateActor(id, name, gender, bd)
 }
 

@@ -3,12 +3,12 @@ package repository_adapter
 import (
 	"fmt"
 	"mxshs/movieLibrary/src/domain"
-	"time"
+	"mxshs/movieLibrary/src/utils"
 
 	_ "github.com/lib/pq"
 )
 
-func (pdb *PgDB) CreateActor(name, gender string, bd time.Time) (*domain.Actor, error) {
+func (pdb *PgDB) CreateActor(name, gender string, bd utils.Date) (*domain.Actor, error) {
 	q, err := pdb.db.Query(
 		`INSERT INTO actors(name, gender, birthdate)
         VALUES ($1, $2, $3)
@@ -92,7 +92,7 @@ func (pdb *PgDB) GetActors() ([]*domain.ActorDetail, error) {
 	return actors, nil
 }
 
-func (pdb *PgDB) UpdateActor(aid int, name, gender string, bd time.Time) (*domain.Actor, error) {
+func (pdb *PgDB) UpdateActor(aid int, name, gender string, bd utils.Date) (*domain.Actor, error) {
 	q, err := pdb.db.Query(
 		`UPDATE actors SET
         name = COALESCE($2, name),

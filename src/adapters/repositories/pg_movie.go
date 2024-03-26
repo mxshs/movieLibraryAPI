@@ -3,12 +3,12 @@ package repository_adapter
 import (
 	"fmt"
 	"mxshs/movieLibrary/src/domain"
-	"time"
+	"mxshs/movieLibrary/src/utils"
 
 	_ "github.com/lib/pq"
 )
 
-func (pdb *PgDB) CreateMovie(title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error) {
+func (pdb *PgDB) CreateMovie(title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error) {
 	q, err := pdb.db.Query(
 		`INSERT INTO movies(title, description, release_date, rating)
         VALUES ($1, $2, $3, $4)
@@ -148,7 +148,7 @@ func (pdb *PgDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*domai
 	return movies, nil
 }
 
-func (pdb *PgDB) UpdateMovie(mid int, title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error) {
+func (pdb *PgDB) UpdateMovie(mid int, title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error) {
 	q, err := pdb.db.Query(
 		`UPDATE movies SET
         title = COALESCE($2, title),

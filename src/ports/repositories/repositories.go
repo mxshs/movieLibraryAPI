@@ -2,24 +2,24 @@ package repositories
 
 import (
 	"mxshs/movieLibrary/src/domain"
-	"time"
+	"mxshs/movieLibrary/src/utils"
 )
 
 type ActorRepository interface {
-	CreateActor(name string, gender string, bd time.Time) (*domain.Actor, error)
+	CreateActor(name string, gender string, bd utils.Date) (*domain.Actor, error)
 	GetActor(id int) (*domain.ActorDetail, error)
 	GetActors() ([]*domain.ActorDetail, error)
-	UpdateActor(id int, name, gender string, bd time.Time) (*domain.Actor, error)
+	UpdateActor(id int, name, gender string, bd utils.Date) (*domain.Actor, error)
 	DeleteActor(id int) error
 }
 
 type MovieRepository interface {
-	CreateMovie(title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error)
+	CreateMovie(title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error)
 	GetMovie(id int) (*domain.MovieDetail, error)
 	GetMovies() ([]*domain.MovieDetail, error)
 	SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*domain.MovieDetail, error)
 	SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.MovieDetail, error)
-	UpdateMovie(id int, title, description string, releaseDate time.Time, rating uint8) (*domain.Movie, error)
+	UpdateMovie(id int, title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error)
 	DeleteMovie(id int) error
 }
 
