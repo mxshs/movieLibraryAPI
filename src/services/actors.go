@@ -16,7 +16,7 @@ func NewActorService(actorRepo repositories.ActorRepository, movieActorRepo repo
 	return &ActorService{actorRepo, movieActorRepo}
 }
 
-func (as *ActorService) Create(name string, gender string, bd utils.Date) (*domain.Actor, error) {
+func (as *ActorService) CreateActor(name string, gender string, bd utils.Date) (*domain.Actor, error) {
 	return as.actorRepo.CreateActor(name, gender, bd)
 }
 
@@ -59,11 +59,11 @@ func (as *ActorService) GetActors() ([]*domain.ActorDetail, error) {
 	return actors, nil
 }
 
-func (as *ActorService) Update(id int, name string, gender string, bd utils.Date) (*domain.Actor, error) {
+func (as *ActorService) UpdateActor(id int, name string, gender string, bd utils.Date) (*domain.Actor, error) {
 	return as.actorRepo.UpdateActor(id, name, gender, bd)
 }
 
-func (as *ActorService) Delete(id int) (int, error) {
+func (as *ActorService) DeleteActor(id int) (int, error) {
 	err := as.actorRepo.DeleteActor(id)
 
 	return id, err

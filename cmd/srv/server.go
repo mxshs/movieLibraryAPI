@@ -1,7 +1,7 @@
 package main
 
 import (
-	repositories "mxshs/movieLibrary/src/adapters/repositories"
+    repositories "mxshs/movieLibrary/src/adapters/repositories/pg"
 	"mxshs/movieLibrary/src/domain"
 	"mxshs/movieLibrary/src/handlers/api"
 	"mxshs/movieLibrary/src/services"

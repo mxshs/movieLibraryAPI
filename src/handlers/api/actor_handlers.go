@@ -42,7 +42,7 @@ func (ah *ActorHandler) CreateActor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := ah.actorService.Create(
+	result, err := ah.actorService.CreateActor(
 		a.Name,
 		a.Gender,
 		a.Birthdate,
@@ -156,7 +156,7 @@ func (ah *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := ah.actorService.Update(
+	result, err := ah.actorService.UpdateActor(
 		aid,
 		a.Name,
 		a.Gender,
@@ -195,7 +195,7 @@ func (ah *ActorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Failed to parse %s as int", id), http.StatusBadRequest)
 	}
 
-	_, err = ah.actorService.Delete(aid)
+	_, err = ah.actorService.DeleteActor(aid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

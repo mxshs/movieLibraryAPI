@@ -111,7 +111,7 @@ func (pdb *PgDB) UpdateActor(aid int, name, gender string, bd utils.Date) (*doma
 
 	var actor domain.Actor
 
-	q.Scan(&actor)
+	q.Scan(&actor.Id, &actor.Name, &actor.Gender, actor.Birthdate)
 
 	return &actor, nil
 }
