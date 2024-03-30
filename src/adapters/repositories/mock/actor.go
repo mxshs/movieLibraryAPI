@@ -7,71 +7,77 @@ import (
 )
 
 func (mdb *MockDB) CreateActor(name string, gender string, bd utils.Date) (*domain.Actor, error) {
-    id := mdb.aid.Add(1)
-    actor := &domain.Actor{
-        Id: int(id),
-        Name: name,
-        Gender: gender,
-        Birthdate: bd,
-    }
+	id := mdb.aid.Add(1)
+	actor := &domain.Actor{
+		Id:        int(id),
+		Name:      name,
+		Gender:    gender,
+		Birthdate: bd,
+	}
 
-    mdb.actors[int(id)] = actor
+	mdb.actors[int(id)] = actor
 
-    return actor, nil
+	return actor, nil
 }
 
 func (mdb *MockDB) GetActor(id int) (*domain.ActorDetail, error) {
-    actor, ok := mdb.actors[id]
-    if !ok {
-        return nil, fmt.Errorf("entity with id %d does not exist", id)
-    }
+	actor, ok := mdb.actors[id]
+	if !ok {
+		return nil, fmt.Errorf("entity with id %d does not exist", id)
+	}
 
-    return &domain.ActorDetail{
-        Id: actor.Id,
-        Name: actor.Name,
-        Gender: actor.Gender,
-        Birthdate: actor.Birthdate,
-    }, nil
+	return &domain.ActorDetail{
+		Id:        actor.Id,
+		Name:      actor.Name,
+		Gender:    actor.Gender,
+		Birthdate: actor.Birthdate,
+	}, nil
 }
 
 func (mdb *MockDB) GetActors() ([]*domain.ActorDetail, error) {
-    actors := make([]*domain.ActorDetail, len(mdb.actors))
+	actors := make([]*domain.ActorDetail, len(mdb.actors))
 
-    for _, actor := range mdb.actors {
-        actors = append(actors, &domain.ActorDetail{
-            Id: actor.Id,
-            Name: actor.Name,
-            Gender: actor.Gender,
-            Birthdate: actor.Birthdate,
-        })
-    }
+	idx := 0
+	for _, actor := range mdb.actors {
+		actors[idx] = &domain.ActorDetail{
+			Id:        actor.Id,
+			Name:      actor.Name,
+			Gender:    actor.Gender,
+			Birthdate: actor.Birthdate,
+		}
+		idx++
+	}
 
-    return actors, nil
+	return actors, nil
 }
 
 func (mdb *MockDB) UpdateActor(id int, name, gender string, bd utils.Date) (*domain.Actor, error) {
-    actor, ok := mdb.actors[id]
-    if !ok {
-        return nil, fmt.Errorf("entity with id %d does not exist", id)
-    }
+	actor, ok := mdb.actors[id]
+	if !ok {
+		return nil, fmt.Errorf("entity with id %d does not exist", id)
+	}
 
-    if len(name) > 0 {
-        actor.Name = name
-    }
+	if len(name) > 0 {
+		actor.Name = name
+	}
 
-    if bd.Unix() != 0 {
-        actor.Birthdate = bd
-    }
+	if len(gender) > 0 {
+		actor.Gender = gender
+	}
 
-    return actor, nil
+	if !bd.IsZero() {
+		actor.Birthdate = bd
+	}
+
+	return actor, nil
 }
 
-func (mdb *MockDB) DeleteActor(id int) (error) {
-    if _, ok := mdb.actors[id]; !ok {
-        return fmt.Errorf("entity with id %d does not exist", id)
-    }
+func (mdb *MockDB) DeleteActor(id int) error {
+	if _, ok := mdb.actors[id]; !ok {
+		return fmt.Errorf("entity with id %d does not exist", id)
+	}
 
-    delete(mdb.actors, id)
+	delete(mdb.actors, id)
 
-    return nil
+	return nil
 }

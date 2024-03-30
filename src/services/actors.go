@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"mxshs/movieLibrary/src/domain"
 	"mxshs/movieLibrary/src/ports/repositories"
 	"mxshs/movieLibrary/src/utils"
@@ -38,6 +39,7 @@ func (as *ActorService) GetActors() ([]*domain.ActorDetail, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(actors)
 
 	var wg sync.WaitGroup
 
