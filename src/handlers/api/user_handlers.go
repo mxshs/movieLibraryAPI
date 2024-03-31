@@ -43,7 +43,7 @@ func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	_, err = uh.userService.CreateUser(user.Username, user.Password)
+	_, err = uh.userService.CreateUser(user.Username, user.Password, domain.USR)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -136,7 +136,7 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 //	@Failure		400
 //	@Failure		401
 //	@Failure		404
-//	@Router			/users/{id}/ [patch]
+//	@Router			/users/{id}/ [put]
 func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
@@ -160,7 +160,7 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	_, err = uh.userService.UpdateUser(uid, user.NewUsername, user.NewPassword)
+	_, err = uh.userService.UpdateUser(uid, user.NewUsername, user.NewPassword, domain.USR)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}

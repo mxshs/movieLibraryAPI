@@ -12,7 +12,7 @@ type MockDB struct {
 
 	actors map[int]*domain.Actor
 	movies map[int]*domain.Movie
-	users  map[int]*domain.UserDetail
+	users  map[int]*domain.User
 
 	movieActors map[int]*LL
 	actorMovies map[int]*LL
@@ -22,7 +22,7 @@ func NewDB() *MockDB {
 	db := &MockDB{}
 	db.actors = make(map[int]*domain.Actor)
 	db.movies = make(map[int]*domain.Movie)
-	db.users = make(map[int]*domain.UserDetail)
+	db.users = make(map[int]*domain.User)
 	db.movieActors = make(map[int]*LL)
 	db.actorMovies = make(map[int]*LL)
 

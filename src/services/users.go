@@ -13,8 +13,8 @@ func NewUserService(userRepo repositories.UserRepository) *UserService {
 	return &UserService{userRepo}
 }
 
-func (us *UserService) CreateUser(username, password string) (*domain.User, error) {
-	return us.userRepo.CreateUser(username, password, domain.USR)
+func (us *UserService) CreateUser(username, password string, role domain.Role) (*domain.User, error) {
+	return us.userRepo.CreateUser(username, password, role)
 }
 
 func (us *UserService) GetUser(id int) (*domain.User, error) {
@@ -25,8 +25,8 @@ func (us *UserService) GetUsers() ([]*domain.User, error) {
 	return us.userRepo.GetUsers()
 }
 
-func (us *UserService) UpdateUser(id int, newUsername, newPassword string) (*domain.User, error) {
-	return us.userRepo.UpdateUser(id, newUsername, newPassword)
+func (us *UserService) UpdateUser(id int, newUsername, newPassword string, role domain.Role) (*domain.User, error) {
+	return us.userRepo.UpdateUser(id, newUsername, newPassword, role)
 }
 
 func (us *UserService) DeleteUser(id int) error {

@@ -35,6 +35,6 @@ type UserRepository interface {
 	GetUser(id int) (*domain.User, error)
 	GetUsers() ([]*domain.User, error)
 	LoginUser(username, password string) (*domain.User, error)
-	UpdateUser(id int, newUsername, newPassword string) (*domain.User, error)
+	UpdateUser(id int, newUsername, newPassword string, role domain.Role) (*domain.User, error)
 	DeleteUser(id int) error
 }

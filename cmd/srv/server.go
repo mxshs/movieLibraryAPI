@@ -33,18 +33,18 @@ func BootstrapAPI(prefix string) {
 	srv.HandleFunc("DELETE /api/v1/movies/{mid}/actors/{aid}/", authMiddleware.Authenticate(movieActorHandler.DeleteMovieActor, domain.ADM))
 
 	srv.HandleFunc("GET /api/v1/actors/{id}", authMiddleware.Authenticate(actorHandler.GetActor, domain.USR))
-	srv.HandleFunc("PATCH /api/v1/actors/{id}/", authMiddleware.Authenticate(actorHandler.UpdateActor, domain.ADM))
+	srv.HandleFunc("PUT /api/v1/actors/{id}/", authMiddleware.Authenticate(actorHandler.UpdateActor, domain.ADM))
 	srv.HandleFunc("DELETE /api/v1/actors/{id}/", authMiddleware.Authenticate(actorHandler.DeleteActor, domain.ADM))
 	srv.HandleFunc("GET /api/v1/actors", authMiddleware.Authenticate(actorHandler.GetActors, domain.USR))
 	srv.HandleFunc("POST /api/v1/actors/", authMiddleware.Authenticate(actorHandler.CreateActor, domain.ADM))
 
 	srv.HandleFunc("GET /api/v1/movies/{id}", authMiddleware.Authenticate(movieHandler.GetMovie, domain.USR))
-	srv.HandleFunc("PATCH /api/v1/movies/{id}/", authMiddleware.Authenticate(movieHandler.UpdateMovie, domain.ADM))
+	srv.HandleFunc("PUT /api/v1/movies/{id}/", authMiddleware.Authenticate(movieHandler.UpdateMovie, domain.ADM))
 	srv.HandleFunc("DELETE /api/v1/movies/{id}/", authMiddleware.Authenticate(movieHandler.DeleteMovie, domain.ADM))
 	srv.HandleFunc("GET /api/v1/movies", authMiddleware.Authenticate(movieHandler.GetMovies, domain.USR))
 	srv.HandleFunc("POST /api/v1/movies/", authMiddleware.Authenticate(movieHandler.CreateMovie, domain.ADM))
 
-	srv.HandleFunc("PATCH /api/v1/users/{username}/", authMiddleware.Authenticate(userHandler.UpdateUser, domain.ADM))
+	srv.HandleFunc("PUT /api/v1/users/{username}/", authMiddleware.Authenticate(userHandler.UpdateUser, domain.ADM))
 	srv.HandleFunc("DELETE /api/v1/users/{username}/", authMiddleware.Authenticate(userHandler.DeleteUser, domain.ADM))
 	srv.HandleFunc("POST /api/v1/users/login/", userHandler.LoginUser)
 	srv.HandleFunc("POST /api/v1/users/reset_token/", authMiddleware.Authenticate(userHandler.DeleteUser, domain.USR))

@@ -46,9 +46,11 @@ type MovieDetail struct {
 type User struct {
 	Id       int    `json:"id" example:"0" format:"int64"`
 	Username string `json:"username" example:"test_user"`
+	Password string `json:"password" example:"test_password"`
 	Role     Role   `json:"role" example:"0" format:"domain.Role"`
 }
 
+// Probably will use this later for some other stuff
 // UserDetail example
 type UserDetail struct {
 	Id       int    `json:"id" example:"0" format:"int64"`
@@ -59,10 +61,11 @@ type UserDetail struct {
 
 type Role int
 
-// higher the role value, higher the status
+// Higher the role value, higher the status
 // Role example
 const (
-	USR Role = iota
+	_ Role = iota
+	USR
 	ADM
 )
 

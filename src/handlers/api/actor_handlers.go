@@ -136,7 +136,7 @@ func (ah *ActorHandler) GetActors(w http.ResponseWriter, r *http.Request) {
 //	@Failure	400
 //	@Failure	401
 //	@Failure	404
-//	@Router		/actors/{id}/ [patch]
+//	@Router		/actors/{id}/ [put]
 func (ah *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 

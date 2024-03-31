@@ -147,7 +147,7 @@ func (mh *MovieHandler) GetMovies(w http.ResponseWriter, r *http.Request) {
 //	@Failure	400
 //	@Failure	401
 //	@Failure	404
-//	@Router		/movies/{id}/ [patch]
+//	@Router		/movies/{id}/ [put]
 func (mh *MovieHandler) UpdateMovie(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 

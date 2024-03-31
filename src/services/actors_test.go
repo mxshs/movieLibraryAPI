@@ -1,26 +1,10 @@
 package services_test
 
 import (
-	mock_db "mxshs/movieLibrary/src/adapters/repositories/mock"
 	"mxshs/movieLibrary/src/domain"
-	"mxshs/movieLibrary/src/services"
 	"mxshs/movieLibrary/src/utils"
 	"testing"
-	"time"
 )
-
-var as *services.ActorService
-
-func init() {
-	db := mock_db.NewDB()
-	as = services.NewActorService(db, db)
-}
-
-func dateHelper(ds string) utils.Date {
-	date, _ := time.Parse("02.01.2006", ds)
-
-	return utils.Date{Time: date}
-}
 
 func TestCreateActor(t *testing.T) {
 	tests := []struct {

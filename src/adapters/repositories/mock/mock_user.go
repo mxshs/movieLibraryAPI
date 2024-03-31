@@ -5,12 +5,12 @@ import (
 	"mxshs/movieLibrary/src/domain"
 )
 
-func (mdb *MockDB) CreateUser(username, password string) (*domain.User, error) {
-	user := &domain.UserDetail{
+func (mdb *MockDB) CreateUser(username, password string, role domain.Role) (*domain.User, error) {
+	user := &domain.User{
 		Id:       int(mdb.uid.Add(1)),
 		Username: username,
 		Password: password,
-		Role:     domain.USR,
+		Role:     role,
 	}
 
 	mdb.users[user.Id] = user
@@ -18,6 +18,7 @@ func (mdb *MockDB) CreateUser(username, password string) (*domain.User, error) {
 	return &domain.User{
 		Id:       user.Id,
 		Username: username,
+		Password: user.Password,
 		Role:     user.Role,
 	}, nil
 }
@@ -29,28 +30,36 @@ func (mdb *MockDB) GetUser(id int) (*domain.User, error) {
 		return &domain.User{
 			Id:       user.Id,
 			Username: user.Username,
+			Password: user.Password,
 			Role:     user.Role,
 		}, nil
 	}
 }
 
-func (mdb *MockDB) UpdateUser(id int, newUsername, newPassword string) (*domain.User, error) {
+func (mdb *MockDB) GetUsers() ([]*domain.User, error) {
+	result := make([]*domain.User, len(mdb.users))
+
+	for idx, user := range mdb.users {
+		result[idx-1] = user
+	}
+
+	return result, nil
+}
+
+func (mdb *MockDB) UpdateUser(id int, newUsername, newPassword string, newRole domain.Role) (*domain.User, error) {
 	user, ok := mdb.users[id]
 	if !ok {
 		return nil, fmt.Errorf("entity with id %d does not exist", id)
 	}
 
-	if len(newUsername) > 0 {
-		user.Username = newUsername
-	}
-
-	if len(newPassword) > 0 {
-		user.Password = newPassword
-	}
+	user.Username = newUsername
+	user.Password = newPassword
+	user.Role = newRole
 
 	return &domain.User{
 		Id:       user.Id,
 		Username: user.Username,
+		Password: user.Password,
 		Role:     user.Role,
 	}, nil
 }
@@ -65,16 +74,21 @@ func (mdb *MockDB) DeleteUser(id int) error {
 	return nil
 }
 
-func (mdb *MockDB) LoginUser(username, password string) error {
+func (mdb *MockDB) LoginUser(username, password string) (*domain.User, error) {
 	for _, user := range mdb.users {
 		if user.Username == username {
 			if user.Password != password {
-				return fmt.Errorf("invalid username/password combination")
+				return nil, fmt.Errorf("invalid username/password combination")
 			}
 
-			return nil
+			return &domain.User{
+				Id:       user.Id,
+				Username: user.Username,
+				Password: user.Password,
+				Role:     user.Role,
+			}, nil
 		}
 	}
 
-	return fmt.Errorf("invalid username/password combination")
+	return nil, fmt.Errorf("invalid username/password combination")
 }

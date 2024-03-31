@@ -38,7 +38,7 @@ func (mdb *MockDB) GetActorMovies(aid int) ([]*domain.Movie, error) {
 	}
 
 	for mid := ll.head; mid != nil; mid = mid.next {
-		movie, _ := mdb.GetMovie(mid.id)
+		movie := mdb.movies[mid.id]
 		result = append(result, movie)
 	}
 

@@ -35,13 +35,14 @@ func (pdb *PgDB) CreateUser(username, password string, role domain.Role) (*domai
 	return &domain.User{
 		Id:       userId,
 		Username: username,
+		Password: password,
 		Role:     role,
 	}, nil
 }
 
 func (pdb *PgDB) GetUserByUsername(username string) (*domain.User, error) {
 	q, err := pdb.db.Query(
-		`SELECT uid, username, role FROM users
+		`SELECT * FROM users
         WHERE username = $1;`,
 		username,
 	)
@@ -55,7 +56,7 @@ func (pdb *PgDB) GetUserByUsername(username string) (*domain.User, error) {
 
 	var user domain.User
 
-	err = q.Scan(&user.Id, &user.Username, &user.Role)
+	err = q.Scan(&user.Id, &user.Username, &user.Password, &user.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,7 @@ func (pdb *PgDB) GetUserByUsername(username string) (*domain.User, error) {
 
 func (pdb *PgDB) GetUser(uid int) (*domain.User, error) {
 	q, err := pdb.db.Query(
-		`SELECT uid, username, role FROM users
+		`SELECT * FROM users
         WHERE uid = $1;`,
 		uid,
 	)
@@ -79,7 +80,7 @@ func (pdb *PgDB) GetUser(uid int) (*domain.User, error) {
 
 	var user domain.User
 
-	err = q.Scan(&user.Id, &user.Username, &user.Role)
+	err = q.Scan(&user.Id, &user.Username, &user.Password, &user.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +90,7 @@ func (pdb *PgDB) GetUser(uid int) (*domain.User, error) {
 
 func (pdb *PgDB) GetUsers() ([]*domain.User, error) {
 	q, err := pdb.db.Query(
-		`SELECT uid, username, role FROM users;`,
+		`SELECT * FROM users;`,
 	)
 	if err != nil {
 		return nil, err
@@ -100,7 +101,7 @@ func (pdb *PgDB) GetUsers() ([]*domain.User, error) {
 	for q.Next() {
 		var user domain.User
 
-		err = q.Scan(&user.Id, &user.Username, &user.Role)
+		err = q.Scan(&user.Id, &user.Username, &user.Password, &user.Role)
 		if err != nil {
 			return nil, err
 		}
@@ -111,16 +112,18 @@ func (pdb *PgDB) GetUsers() ([]*domain.User, error) {
 	return users, nil
 }
 
-func (pdb *PgDB) UpdateUser(id int, newUsername, newPassword string) (*domain.User, error) {
+func (pdb *PgDB) UpdateUser(id int, newUsername, newPassword string, newRole domain.Role) (*domain.User, error) {
 	q, err := pdb.db.Query(
 		`UPDATE users SET
         username = COALESCE($2, username)
         password = COALESCE($3, password)
+        role = COALESCE($4, role)
         WHERE id = $1
-        RETURNING uid, username, role;`,
+        RETURNING uid, username, password, role;`,
 		id,
 		newUsername,
 		newPassword,
+		newRole,
 	)
 	if err != nil {
 		return nil, err
@@ -132,7 +135,7 @@ func (pdb *PgDB) UpdateUser(id int, newUsername, newPassword string) (*domain.Us
 
 	var user domain.User
 
-	err = q.Scan(&user.Id, &user.Username, &user.Role)
+	err = q.Scan(&user.Id, &user.Username, &user.Password, &user.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +164,7 @@ func (pdb *PgDB) LoginUser(username, password string) (*domain.User, error) {
 	}
 
 	if !q.Next() {
-		return nil, fmt.Errorf("user with username %s does not exist", username)
+		return nil, fmt.Errorf("user with given credentials does not exist")
 	}
 
 	var user domain.UserDetail
@@ -172,12 +175,13 @@ func (pdb *PgDB) LoginUser(username, password string) (*domain.User, error) {
 	}
 
 	if user.Password != password {
-		return nil, fmt.Errorf("invalid password")
+		return nil, fmt.Errorf("user with given credentials does not exist")
 	}
 
 	return &domain.User{
 		Id:       user.Id,
 		Username: user.Username,
+		Password: user.Password,
 		Role:     user.Role,
 	}, nil
 }
