@@ -39,8 +39,10 @@ func (mdb *MockDB) GetUser(id int) (*domain.User, error) {
 func (mdb *MockDB) GetUsers() ([]*domain.User, error) {
 	result := make([]*domain.User, len(mdb.users))
 
-	for idx, user := range mdb.users {
-		result[idx-1] = user
+	idx := 0
+	for _, user := range mdb.users {
+		result[idx] = user
+		idx++
 	}
 
 	return result, nil

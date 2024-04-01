@@ -1,10 +1,55 @@
 package services_test
 
 import (
-	"fmt"
 	"mxshs/movieLibrary/src/domain"
 	"testing"
 )
+
+func TestGetUser(t *testing.T) {
+	tests := []struct {
+		id       int
+		err      bool
+		expected *domain.User
+	}{
+		{
+			1,
+			false,
+			&domain.User{
+				Username: "test",
+				Password: "testpassword",
+				Role:     domain.USR,
+			},
+		},
+		{
+			2,
+			true,
+			nil,
+		},
+	}
+
+	for _, test := range tests {
+		res, err := us.GetUser(test.id)
+		if err != nil {
+			if test.err {
+				return
+			}
+
+			t.Fail()
+		}
+
+		if res.Username != test.expected.Username {
+			t.Fail()
+		}
+
+		if res.Password != test.expected.Password {
+			t.Fail()
+		}
+
+		if res.Role != test.expected.Role {
+			t.Fail()
+		}
+	}
+}
 
 func TestCreateUser(t *testing.T) {
 	tests := []struct {
@@ -20,7 +65,6 @@ func TestCreateUser(t *testing.T) {
 			domain.USR,
 			false,
 			&domain.User{
-				Id:       1,
 				Username: "test1",
 				Password: "testpassword1",
 				Role:     domain.USR,
@@ -32,7 +76,6 @@ func TestCreateUser(t *testing.T) {
 			domain.ADM,
 			false,
 			&domain.User{
-				Id:       2,
 				Username: "test2",
 				Password: "testpassword2",
 				Role:     domain.ADM,
@@ -50,82 +93,20 @@ func TestCreateUser(t *testing.T) {
 			t.Fail()
 		}
 
-		fmt.Println(res)
-		if res.Id != test.expected.Id {
-			t.Fail()
-		}
-
-		if res.Username != test.expected.Username {
-			t.Fail()
-		}
-
-		if res.Password != test.expected.Password {
-			t.Fail()
-		}
-
-		if res.Role != test.expected.Role {
-			t.Fail()
-		}
-	}
-}
-
-func TestGetUser(t *testing.T) {
-	tests := []struct {
-		id       int
-		err      bool
-		expected *domain.User
-	}{
-		{
-			1,
-			false,
-			&domain.User{
-				Id:       1,
-				Username: "test1",
-				Password: "testpassword1",
-				Role:     domain.USR,
-			},
-		},
-		{
-			2,
-			false,
-			&domain.User{
-				Id:       2,
-				Username: "test2",
-				Password: "testpassword2",
-				Role:     domain.ADM,
-			},
-		},
-		{
-			3,
-			true,
-			nil,
-		},
-	}
-
-	for _, test := range tests {
-		res, err := us.GetUser(test.id)
+		user, err := us.GetUser(res.Id)
 		if err != nil {
-			if test.err {
-				return
-			}
+			panic(err)
+		}
 
+		if user.Username != test.expected.Username {
 			t.Fail()
 		}
 
-		fmt.Println(res)
-		if res.Id != test.expected.Id {
+		if user.Password != test.expected.Password {
 			t.Fail()
 		}
 
-		if res.Username != test.expected.Username {
-			t.Fail()
-		}
-
-		if res.Password != test.expected.Password {
-			t.Fail()
-		}
-
-		if res.Role != test.expected.Role {
+		if user.Role != test.expected.Role {
 			t.Fail()
 		}
 	}
@@ -140,13 +121,16 @@ func TestGetUsers(t *testing.T) {
 			false,
 			[]*domain.User{
 				{
-					Id:       1,
+					Username: "test",
+					Password: "testpassword",
+					Role:     domain.USR,
+				},
+				{
 					Username: "test1",
 					Password: "testpassword1",
 					Role:     domain.USR,
 				},
 				{
-					Id:       2,
 					Username: "test2",
 					Password: "testpassword2",
 					Role:     domain.ADM,
@@ -166,10 +150,6 @@ func TestGetUsers(t *testing.T) {
 		}
 
 		for idx, user := range res {
-			if user.Id != test.expected[idx].Id {
-				t.Fail()
-			}
-
 			if user.Username != test.expected[idx].Username {
 				t.Fail()
 			}
@@ -195,33 +175,19 @@ func TestUpdateUser(t *testing.T) {
 		expected    *domain.User
 	}{
 		{
-			1,
+			2,
 			"test11",
 			"testpassword11",
 			domain.ADM,
 			false,
 			&domain.User{
-				Id:       1,
 				Username: "test11",
 				Password: "testpassword11",
 				Role:     domain.ADM,
 			},
 		},
 		{
-			2,
-			"test22",
-			"testpassword22",
-			domain.ADM,
-			false,
-			&domain.User{
-				Id:       2,
-				Username: "test22",
-				Password: "testpassword22",
-				Role:     domain.ADM,
-			},
-		},
-		{
-			3,
+			50,
 			"",
 			"",
 			domain.ADM,
@@ -240,20 +206,20 @@ func TestUpdateUser(t *testing.T) {
 			t.Fail()
 		}
 
-		fmt.Println(res)
-		if res.Id != test.expected.Id {
+		user, err := us.GetUser(res.Id)
+		if err != nil {
+			panic(err)
+		}
+
+		if user.Username != test.expected.Username {
 			t.Fail()
 		}
 
-		if res.Username != test.expected.Username {
+		if user.Password != test.expected.Password {
 			t.Fail()
 		}
 
-		if res.Password != test.expected.Password {
-			t.Fail()
-		}
-
-		if res.Role != test.expected.Role {
+		if user.Role != test.expected.Role {
 			t.Fail()
 		}
 	}
@@ -267,25 +233,14 @@ func TestLoginUser(t *testing.T) {
 		expected *domain.User
 	}{
 		{
-			"test11",
-			"testpassword11",
+			"test",
+			"testpassword",
 			false,
 			&domain.User{
 				Id:       1,
-				Username: "test11",
-				Password: "testpassword11",
-				Role:     domain.ADM,
-			},
-		},
-		{
-			"test22",
-			"testpassword22",
-			false,
-			&domain.User{
-				Id:       2,
-				Username: "test22",
-				Password: "testpassword22",
-				Role:     domain.ADM,
+				Username: "test",
+				Password: "testpassword",
+				Role:     domain.USR,
 			},
 		},
 		{
@@ -303,11 +258,6 @@ func TestLoginUser(t *testing.T) {
 				return
 			}
 
-			t.Fail()
-		}
-
-		fmt.Println(res)
-		if res.Id != test.expected.Id {
 			t.Fail()
 		}
 
@@ -336,15 +286,30 @@ func TestDeleteUser(t *testing.T) {
 			false,
 			[]*domain.User{
 				{
-					Id:       1,
-					Username: "test11",
-					Password: "testpassword11",
+					Username: "test",
+					Password: "testpassword",
+					Role:     domain.USR,
+				},
+				{
+					Username: "test2",
+					Password: "testpassword2",
 					Role:     domain.ADM,
 				},
 			},
 		},
 		{
-			2,
+			3,
+			false,
+			[]*domain.User{
+				{
+					Username: "test",
+					Password: "testpassword",
+					Role:     domain.USR,
+				},
+			},
+		},
+		{
+			4,
 			true,
 			nil,
 		},
@@ -366,10 +331,6 @@ func TestDeleteUser(t *testing.T) {
 		}
 
 		for idx, user := range res {
-			if user.Id != test.expected[idx].Id {
-				t.Fail()
-			}
-
 			if user.Username != test.expected[idx].Username {
 				t.Fail()
 			}

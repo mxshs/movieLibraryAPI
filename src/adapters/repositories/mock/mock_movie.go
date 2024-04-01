@@ -25,7 +25,7 @@ func (mdb *MockDB) CreateMovie(title, description string, releaseDate utils.Date
 func (mdb *MockDB) GetMovie(id int) (*domain.MovieDetail, error) {
 	movie, ok := mdb.movies[id]
 	if !ok {
-		return nil, fmt.Errorf("Entity with id %d does not exist", id)
+		return nil, fmt.Errorf("entity with id %d does not exist", id)
 	}
 
 	return &domain.MovieDetail{
@@ -58,7 +58,7 @@ func (mdb *MockDB) GetMovies() ([]*domain.MovieDetail, error) {
 func (mdb *MockDB) UpdateMovie(id int, title, description string, releaseDate utils.Date, rating uint8) (*domain.Movie, error) {
 	movie, ok := mdb.movies[id]
 	if !ok {
-		return nil, fmt.Errorf("Entity with id %d does not exist", id)
+		return nil, fmt.Errorf("entity with id %d does not exist", id)
 	}
 
 	if len(title) > 0 {
@@ -119,10 +119,6 @@ func (mdb *MockDB) SearchMoviesByTitle(sortKey, sortOrder, title string) ([]*dom
 func (mdb *MockDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*domain.MovieDetail, error) {
 	result := []*domain.MovieDetail{}
 
-	if len(title) == 0 && len(actor) == 0 {
-		return mdb.GetMovies()
-	}
-
 	for _, movie := range mdb.movies {
 		if strings.Contains(movie.Title, title) {
 			stars, err := mdb.GetMovieActors(movie.Id)
@@ -139,10 +135,8 @@ func (mdb *MockDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*dom
 							Description: movie.Description,
 							ReleaseDate: movie.ReleaseDate,
 							Rating:      movie.Rating,
-							Stars:       nil,
+							Stars:       stars,
 						}
-
-						m.Stars = stars
 
 						result = append(result, m)
 						break
@@ -155,10 +149,8 @@ func (mdb *MockDB) SearchMovies(sortKey, sortOrder, title, actor string) ([]*dom
 					Description: movie.Description,
 					ReleaseDate: movie.ReleaseDate,
 					Rating:      movie.Rating,
-					Stars:       nil,
+					Stars:       stars,
 				}
-
-				m.Stars = stars
 
 				result = append(result, m)
 			}
